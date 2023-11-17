@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import authRouter from "../features/auth/routes";
-import shoppingListRouter from "../features/shoppingList/routes";
+import shoppingListRouter from "../features/shopping-list/routes";
 import otherRouter from "./otherRoutes";
 
 const app: Express = express();
