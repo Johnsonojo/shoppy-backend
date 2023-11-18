@@ -11,10 +11,16 @@ export interface IShoppingListItemModel extends IShoppingListItem, Document {}
 
 const shoppingListItemSchema: Schema = new Schema(
   {
-    name: { type: String, required: true },
-    quantity: { type: Number, default: 1 },
-    unitPrice: { type: Number, default: 0 },
-    shoppingList: {
+    name: { type: String, required: [true, "Please provide the item's name"] },
+    quantity: {
+      type: Number,
+      required: [true, "Please provide the item's quantity"],
+    },
+    unitPrice: {
+      type: Number,
+      required: [true, "Please provide the item's unit price"],
+    },
+    shoppingListId: {
       type: Schema.Types.ObjectId,
       ref: "ShoppingList",
       required: true,
