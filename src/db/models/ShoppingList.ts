@@ -1,9 +1,14 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 
+interface IListItems {
+  name: string;
+  quantity: number;
+  unitPrice: number;
+}
 interface IShoppingList {
   title: string;
   user: Types.ObjectId | string;
-  items: Types.ObjectId[] | string[];
+  items: IListItems[];
   isDone: boolean;
 }
 
@@ -20,26 +25,37 @@ const shoppingListSchema = new Schema(
       type: String,
       default: "No description",
       unique: true,
-      required: [true, "Please provide a description"],
+      required: [true, "Please provide a description for your shopping list"],
     },
-    category: { type: String, required: [true, "Please provide a category"] },
+    category: {
+      type: String,
+      required: [true, "Please provide a category for your shopping list"],
+    },
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    items: [
-      {
-        name: {
-          type: String,
-          required: [true, "Please provide the item's name"],
+    items: {
+      type: [
+        {
+          name: {
+            type: String,
+            required: [true, "Please provide the item's name"],
+          },
+          quantity: {
+            type: Number,
+            required: [true, "Please provide the item's quantity"],
+          },
+          unitPrice: {
+            type: Number,
+            required: [true, "Please provide the item's unit price"],
+          },
         },
-        quantity: {
-          type: Number,
-          required: [true, "Please provide the item's quantity"],
+      ],
+      validate: {
+        validator: function (items: IListItems[]) {
+          return items.length > 0;
         },
-        unitPrice: {
-          type: Number,
-          required: [true, "Please provide the item's unit price"],
-        },
+        message: "The shopping items array should not be empty",
       },
-    ],
+    },
     total: { type: Number, required: true },
     isDone: { type: Boolean, default: false },
   },
