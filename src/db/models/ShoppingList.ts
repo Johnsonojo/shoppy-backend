@@ -59,7 +59,10 @@ const shoppingListSchema = new Schema(
     total: { type: Number, required: true },
     isDone: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false,
+  }
 );
 
 export default mongoose.model<IShoppingListModel>(
