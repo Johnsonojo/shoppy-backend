@@ -26,7 +26,10 @@ const shoppingListItemSchema: Schema = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false,
+  }
 );
 
 export default mongoose.model<IShoppingListItem>(
