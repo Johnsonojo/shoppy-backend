@@ -6,6 +6,7 @@ import {
   editOneShoppingListForUser,
   getAllShoppingListsForAUser,
   getOneShoppingListForUser,
+  getOneShoppingListItemForUser,
   makeOneShoppingListDoneForUser,
 } from "./controller";
 
@@ -17,6 +18,12 @@ shoppingListRouter.post("/", verifyAccessToken, createShoppingList);
 shoppingListRouter.get("/", verifyAccessToken, getAllShoppingListsForAUser);
 
 shoppingListRouter.get("/:id", verifyAccessToken, getOneShoppingListForUser);
+
+shoppingListRouter.get(
+  "/:listId/:itemId",
+  verifyAccessToken,
+  getOneShoppingListItemForUser
+);
 
 shoppingListRouter.put("/:id", verifyAccessToken, editOneShoppingListForUser);
 
