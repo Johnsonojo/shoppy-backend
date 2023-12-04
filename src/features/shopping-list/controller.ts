@@ -68,15 +68,24 @@ export const getAllShoppingListsForAUser = async (
   try {
     const userId = req.payload.id;
 
-    const shoppingLists = await ShoppingList.find({ user: userId }).populate(
-      "user",
-      "-password -token -isVerified -role -createdAt -updatedAt"
-    );
+    const shoppingLists = await ShoppingList.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .populate(
+        "user",
+        "-password -token -isVerified -role -createdAt -updatedAt"
+      );
+
+    const modifiedShoppingLists = shoppingLists.map((list) => ({
+      ...list.toObject(),
+      // items: list.items.map((item: any) => ({
+      //   ...item._doc,
+      // })),
+    }));
 
     return res.status(200).json({
       message: "Shopping lists retrieved successfully",
       status: "success",
-      data: shoppingLists,
+      data: modifiedShoppingLists,
     });
   } catch (error: any) {
     return res.status(500).json({
@@ -114,6 +123,55 @@ export const getOneShoppingListForUser = async (
       message: "Shopping list retrieved successfully",
       status: "success",
       data: shoppingListFound,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "failure",
+    });
+  }
+};
+
+export const getOneShoppingListItemForUser = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const userId = req.payload.id;
+    const { listId, itemId } = req.params;
+
+    const shoppingListFound = await ShoppingList.findOne({
+      _id: listId,
+      user: userId,
+    }).populate(
+      "user",
+      "-password -token -isVerified -role -createdAt -updatedAt"
+    );
+
+    if (!shoppingListFound) {
+      return res.status(404).json({
+        message: "Shopping list not found",
+        status: "failure",
+        data: null,
+      });
+    }
+
+    const itemFound = shoppingListFound.items.find(
+      (item: any) => item._id == itemId
+    );
+
+    if (!itemFound) {
+      return res.status(404).json({
+        message: "Shopping list item not found",
+        status: "failure",
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Shopping list item retrieved successfully",
+      status: "success",
+      data: itemFound,
     });
   } catch (error: any) {
     return res.status(500).json({
